@@ -1,0 +1,24 @@
+{
+  "name": "@tridnguyen/portfolio",
+  "version": "1.0.0",
+  "description": "",
+  "main": "portfolio.js",
+  "type": "module",
+  "scripts": {
+    "start": "node --experimental-modules -r dotenv/config bin/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/tnguyen14/portfolio.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tnguyen14/portfolio/issues"
+  },
+  "homepage": "https://github.com/tnguyen14/portfolio#readme",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "dotenv": "^8.0.0"
+  }
+}
