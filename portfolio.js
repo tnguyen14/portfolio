@@ -23,13 +23,7 @@ export async function getAccountPortfolio(authToken) {
             symbol: quote.symbol,
             equity: positionQty * extendHoursTradePrice
           }
-        }, err => {
-          console.error('Unable to get quote for', instrument.name, instrument.symbol, position.quantity);
-          console.error(err);
         })
-      }, err => {
-        console.error('Unable to get instrument for', position.url);
-        console.error(err);
       });
     }));
   }).then(null, err => {
@@ -61,10 +55,6 @@ function getPositions() {
 function getInstrument(instrumentUrl) {
   return ax.get(instrumentUrl).then(resp => {
     return resp.data;
-  }, err => {
-    if (err.response.data) {
-      throw new Error(JSON.stringify(err.response.data));
-    }
   })
 }
 
@@ -73,12 +63,6 @@ function getInstrument(instrumentUrl) {
 // {"inactive_instruments":["QCP"]}
 function getQuote(quoteUrl) {
   return ax.get(quoteUrl).then(resp => {
-    // console.log('QUOTE: ');
-    // console.log(resp.data);
     return resp.data;
-  }, err => {
-    if (err.response.data) {
-      throw new Error(JSON.stringify(err.response.data));
-    }
   });
 }
