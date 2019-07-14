@@ -40,10 +40,13 @@ function getEquityPositions() {
       const instrumentId = instrumentUrlParts[instrumentUrlParts.length - 2];
       return getInstrument(instrumentId).then(instrument => {
         return getQuote(instrument.symbol).then(quote => {
-          const extendHoursTradePrice = Number.parseFloat(quote.last_extended_hours_trade_price);
+          const tradePrice = Number.parseFloat(quote.last_extended_hours_trade_price || quote.last_trade_price);
+          if (quote.symbol == 'PHK') {
+            console.log(quote);
+          }
           return {
             symbol: quote.symbol,
-            equity: positionQty * extendHoursTradePrice
+            equity: positionQty * tradePrice
           }
         })
       });
