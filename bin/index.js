@@ -1,13 +1,13 @@
 import dotenv from 'dotenv';
-import {getAccountPortfolio} from '../portfolio.js';
+import {getPortfolio} from '../portfolio.js';
 
 dotenv.config();
 
-getAccountPortfolio(process.env.AUTH_TOKEN).then(port => {
-  port.forEach(position => {
+getPortfolio(process.env.AUTH_TOKEN, process.env.ACCOUNT).then(port => {
+  port.positions.forEach(position => {
     if (!position) {
       return;
     }
-    console.log(`${position.symbol}: ${position.equity}`);
+    console.log(`${position.symbol}: ${position.equity} - ${position.percentage * 100}%`);
   });
 }).catch(console.error);

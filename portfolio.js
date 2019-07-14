@@ -1,31 +1,22 @@
-import axios from 'axios';
+import { ax, getPositions, getInstrument, getQuote, getAccount, getAccountPortfolio } from './api.js';
 
-const ax = axios.create({
-  baseURL: 'https://api.robinhood.com',
-});
+import compact from 'lodash.compact';
 
-export async function getAccountPortfolio(authToken) {
+export function getPortfolio(authToken, accountNumber) {
   if (!authToken) {
     throw new Error('Auth token is needed. Please get it from robinhood.com');
   }
   ax.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
-  return getPositions().then(positions => {
-    return Promise.all(positions.map(position => {
-      const positionQty = Number.parseInt(position.quantity);
-      // skip over empty position
-      if (positionQty == 0) {
-        return;
-      }
-      return getInstrument(position.instrument).then(instrument => {
-        return getQuote(instrument.quote).then(quote => {
-          const extendHoursTradePrice = Number.parseFloat(quote.last_extended_hours_trade_price);
-          return {
-            symbol: quote.symbol,
-            equity: positionQty * extendHoursTradePrice
-          }
-        })
-      });
-    }));
+  return Promise.all([getEquityPositions(),
+    getAccountEquity(accountNumber)
+  ]).then(([positions, portfolio]) => {
+    return {
+      positions: compact(positions).map(position => {
+        position.percentage = position.equity / portfolio.marketValue
+        return position;
+      }),
+      portfolio
+    }
   }).then(null, err => {
     if (err.response && err.response.data) {
       console.error(err.response.data);
@@ -35,34 +26,41 @@ export async function getAccountPortfolio(authToken) {
   })
 }
 
-function getPositions() {
-  return ax.get('positions/').then(resp => {
-    if (!resp.data) {
-      throw new Error('No positions data');
-    }
-    if (resp.data.previous) {
-      console.log('positions previous: ', resp.data.previous);
-    }
-    if (resp.data.next) {
-      console.log('positions next: ', resp.data.next);
-    }
-    return resp.data.results;
-  })
-}
-
-// an instrument's tradability attribute can be:
-// "tradable", "untradable", "position_closing_only"
-function getInstrument(instrumentUrl) {
-  return ax.get(instrumentUrl).then(resp => {
-    return resp.data;
-  })
-}
-
-// quote can throw error such as:
-// {"missing_instruments":["SCTY"]}
-// {"inactive_instruments":["QCP"]}
-function getQuote(quoteUrl) {
-  return ax.get(quoteUrl).then(resp => {
-    return resp.data;
+function getEquityPositions() {
+  return getPositions().then(positions => {
+    return Promise.all(positions.map(position => {
+      const positionQty = Number.parseInt(position.quantity);
+      // skip over empty position
+      if (positionQty == 0) {
+        return;
+      }
+      // instrument is a URL instead of an ID
+      // https://api.robinhood.com/instruments/48bbe4a0-d167-4bfe-8d3b-494f9bb56350/
+      const instrumentUrlParts = position.instrument.split('/');
+      const instrumentId = instrumentUrlParts[instrumentUrlParts.length - 2];
+      return getInstrument(instrumentId).then(instrument => {
+        return getQuote(instrument.symbol).then(quote => {
+          const extendHoursTradePrice = Number.parseFloat(quote.last_extended_hours_trade_price);
+          return {
+            symbol: quote.symbol,
+            equity: positionQty * extendHoursTradePrice
+          }
+        })
+      });
+    }));
   });
 }
+
+
+function getAccountEquity(accountNumber) {
+  return Promise.all([
+    getAccount(accountNumber),
+    getAccountPortfolio(accountNumber)
+  ]).then(([account, accountPortfolio]) => {
+    return {
+      cash: account.cash,
+      marketValue: accountPortfolio.extended_hours_market_value
+    }
+  })
+}
+
