@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/tnguyen14/portfolio#readme",
   "dependencies": {
+    "@iarna/toml": "^2.2.3",
     "@tridnguyen/usd-formatter": "^1.0.0",
     "axios": "^0.19.0",
     "dotenv": "^8.0.0",

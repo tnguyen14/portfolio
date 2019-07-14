@@ -1,6 +1,16 @@
+import fs from 'fs';
+import compact from 'lodash.compact';
+import TOML from '@iarna/toml';
 import { ax, getPositions, getInstrument, getQuote, getAccount, getAccountPortfolio } from './api.js';
 
-import compact from 'lodash.compact';
+const categoriesToml = fs.readFileSync('categories.toml', 'utf8');
+const categories = TOML.parse(categoriesToml);
+const lifekitCategories = Object.keys(categories.lifekit).map(cat => {
+  return {
+    id: cat,
+    ...categories.lifekit[cat]
+  };
+});
 
 export function getPortfolio(authToken, accountNumber) {
   if (!authToken) {
@@ -10,12 +20,33 @@ export function getPortfolio(authToken, accountNumber) {
   return Promise.all([getEquityPositions(),
     getAccountEquity(accountNumber)
   ]).then(([positions, portfolio]) => {
+    let totalPortfolio = 0;
+    let byCategories = lifekitCategories.reduce((byCats, cat) => {
+      byCats[cat.id] = cat;
+      // instantiate empty amount
+      byCats[cat.id].total = 0;
+      return byCats;
+    }, {});
     return {
       positions: compact(positions).map(position => {
         position.percentage = position.equity / portfolio.marketValue
+        totalPortfolio += position.equity;
+        let symbolIsExplicitlyListed = false;
+        lifekitCategories.forEach((cat) => {
+          if (cat.symbols.includes(position.symbol)) {
+            byCategories[cat.id].total += position.equity
+            symbolIsExplicitlyListed = true;
+          }
+        });
+        // default to US Stocks
+        if (!symbolIsExplicitlyListed) {
+          byCategories['us-stocks'].total += position.equity
+        }
         return position;
       }),
-      portfolio
+      byCategories,
+      totalPortfolio,
+      ...portfolio
     }
   }).then(null, err => {
     if (err.response && err.response.data) {

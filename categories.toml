@@ -1,0 +1,54 @@
+# Categories to sort stocks/ ETFs
+
+[lifekit]
+# as detailed in https://www.npr.org/2018/12/12/676158680/your-cheat-sheet-for-smarter-investing
+
+# 30 percent in U.S. stocks.
+# 15 percent in developed country stocks.
+# 5 percent in emerging market stocks.
+# 20 percent in domestic U.S. real estate.
+# 15 percent in U.S. Treasury bonds.
+# 15 percent U.S. Treasury Inflation Protected Securities.
+
+[lifekit.us-stocks]
+name = "U.S. stocks"
+percentage = 0.3
+symbols = [
+  "SPY",
+  "VOO"
+]
+
+[lifekit.developed-stocks]
+name = "Developed country stocks"
+percentage = 0.15
+symbols = [
+  "VEA"
+]
+
+[lifekit.emerging-stocks]
+name = "Emerging market stocks"
+percentage = 0.05
+symbols = [
+  "VWO"
+]
+
+[lifekit.real-estate]
+name = "Domestic U.S. real estate"
+percentage = 0.2
+symbols = [
+  "VNQ"
+]
+
+[lifekit.tbonds]
+name = "U.S. Treasury bonds"
+percentage = 0.15
+symbols = [
+  "BND"
+]
+
+[lifekit.tips]
+name = "U.S. Treasury Inflation Protected Securities"
+percentage = 0.15
+symbols = [
+  "VTIP"
+]
