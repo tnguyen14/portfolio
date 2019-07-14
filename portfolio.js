@@ -20,7 +20,6 @@ export function getPortfolio(authToken, accountNumber) {
   return Promise.all([getEquityPositions(),
     getAccountEquity(accountNumber)
   ]).then(([positions, portfolio]) => {
-    let totalPortfolio = 0;
     let byCategories = lifekitCategories.reduce((byCats, cat) => {
       byCats[cat.id] = cat;
       // instantiate empty amount
@@ -30,7 +29,6 @@ export function getPortfolio(authToken, accountNumber) {
     return {
       positions: compact(positions).map(position => {
         position.percentage = position.equity / portfolio.marketValue
-        totalPortfolio += position.equity;
         let symbolIsExplicitlyListed = false;
         lifekitCategories.forEach((cat) => {
           if (cat.symbols.includes(position.symbol)) {
@@ -45,7 +43,6 @@ export function getPortfolio(authToken, accountNumber) {
         return position;
       }),
       byCategories,
-      totalPortfolio,
       ...portfolio
     }
   }).then(null, err => {
