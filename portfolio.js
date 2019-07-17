@@ -6,7 +6,7 @@ import {
   getAccountPortfolio
 } from "./api.js";
 
-import categories from "./categories.json";
+import categories from "./categories.js";
 
 const lifekitCategories = Object.keys(categories.lifekit).map(cat => {
   return {
