@@ -1,5 +1,5 @@
 function getRobinhoodApi(uri) {
-  return fetch(`https://api.robinhood.com/${uri}`, {
+  return fetch(`${BASE_URL}/${uri}`, {
     headers: {
       Authorization: `Bearer ${AUTH_TOKEN}`
     }
