@@ -1,5 +1,4 @@
 import fs from "fs";
-import compact from "lodash.compact";
 import TOML from "@iarna/toml";
 import {
   ax,
@@ -33,21 +32,23 @@ export function getPortfolio(authToken, accountNumber) {
         return byCats;
       }, {});
       return {
-        positions: compact(positions).map(position => {
-          position.percentage = position.equity / portfolio.marketValue;
-          let symbolIsExplicitlyListed = false;
-          lifekitCategories.forEach(cat => {
-            if (cat.symbols.includes(position.symbol)) {
-              byCategories[cat.id].total += position.equity;
-              symbolIsExplicitlyListed = true;
+        positions: positions
+          .filter(p => p)
+          .map(position => {
+            position.percentage = position.equity / portfolio.marketValue;
+            let symbolIsExplicitlyListed = false;
+            lifekitCategories.forEach(cat => {
+              if (cat.symbols.includes(position.symbol)) {
+                byCategories[cat.id].total += position.equity;
+                symbolIsExplicitlyListed = true;
+              }
+            });
+            // default to US Stocks
+            if (!symbolIsExplicitlyListed) {
+              byCategories["us-stocks"].total += position.equity;
             }
-          });
-          // default to US Stocks
-          if (!symbolIsExplicitlyListed) {
-            byCategories["us-stocks"].total += position.equity;
-          }
-          return position;
-        }),
+            return position;
+          }),
         byCategories,
         ...portfolio
       };
