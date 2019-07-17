@@ -3,7 +3,9 @@ function getRobinhoodApi(uri) {
     headers: {
       Authorization: `Bearer ${AUTH_TOKEN}`
     }
-  }).then(response => response.json());
+  })
+    .then(response => response.json())
+    .then(null, console.error);
 }
 
 export function getPositions() {
@@ -39,5 +41,5 @@ export function getAccount(accountNumber) {
 }
 
 export function getAccountPortfolio(accountNumber) {
-  return getRobinhoodApi(`accounts/${accountNumber}/portfolio`);
+  return getRobinhoodApi(`accounts/${accountNumber}/portfolio/`);
 }
