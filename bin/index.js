@@ -3,7 +3,9 @@ import { getPortfolio } from "../portfolio.js";
 import money from "@tridnguyen/usd-formatter";
 import chalk from "chalk";
 import Table from "cli-table";
+import fetch from "node-fetch";
 
+global.fetch = fetch;
 const log = console.log;
 
 dotenv.config();
@@ -15,8 +17,19 @@ const catsTable = new Table({
   }
 });
 
-getPortfolio(process.env.AUTH_TOKEN, process.env.ACCOUNT)
+if (!process.env.AUTH_TOKEN) {
+  console.error("Auth token is needed. Please get it from robinhood.com");
+  process.exit(1);
+}
+
+global.AUTH_TOKEN = process.env.AUTH_TOKEN;
+
+getPortfolio(process.env.ACCOUNT)
   .then(port => {
+    if (!port) {
+      console.error("Something went wrong in retrieving portfolio.");
+      return;
+    }
     port.positions.forEach(position => {
       // console.log(`${position.symbol}: ${money(position.equity)} - ${(position.percentage * 100).toFixed(2)}%`);
     });

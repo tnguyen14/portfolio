@@ -1,45 +1,43 @@
-import axios from "axios";
-
-export const ax = axios.create({
-  baseURL: "https://api.robinhood.com"
-});
+function getRobinhoodApi(uri) {
+  return fetch(`https://api.robinhood.com/${uri}`, {
+    headers: {
+      Authorization: `Bearer ${AUTH_TOKEN}`
+    }
+  }).then(response => response.json());
+}
 
 export function getPositions() {
-  return ax.get("positions/").then(resp => {
-    if (!resp.data) {
+  return getRobinhoodApi("positions/").then(resp => {
+    if (!resp) {
       throw new Error("No positions data");
     }
-    if (resp.data.previous) {
-      console.log("positions previous: ", resp.data.previous);
+    if (resp.previous) {
+      console.log("positions previous: ", resp.previous);
     }
-    if (resp.data.next) {
-      console.log("positions next: ", resp.data.next);
+    if (resp.next) {
+      console.log("positions next: ", resp.next);
     }
-    return resp.data.results;
+    return resp.results;
   });
 }
 
 // an instrument's tradability attribute can be:
 // "tradable", "untradable", "position_closing_only"
 export function getInstrument(instrument) {
-  return ax.get(`instruments/${instrument}/`).then(resp => {
-    return resp.data;
-  });
+  return getRobinhoodApi(`instruments/${instrument}/`);
 }
 
 // quote can throw error such as:
 // {"missing_instruments":["SCTY"]}
 // {"inactive_instruments":["QCP"]}
 export function getQuote(quote) {
-  return ax.get(`quotes/${quote}/`).then(resp => {
-    return resp.data;
-  });
+  return getRobinhoodApi(`quotes/${quote}/`);
 }
 
 export function getAccount(accountNumber) {
-  return ax.get(`accounts/${accountNumber}/`).then(resp => resp.data);
+  return getRobinhoodApi(`accounts/${accountNumber}/`);
 }
 
 export function getAccountPortfolio(accountNumber) {
-  return ax.get(`accounts/${accountNumber}/portfolio`).then(resp => resp.data);
+  return getRobinhoodApi(`accounts/${accountNumber}/portfolio`);
 }

@@ -1,7 +1,4 @@
-import fs from "fs";
-import TOML from "@iarna/toml";
 import {
-  ax,
   getPositions,
   getInstrument,
   getQuote,
@@ -9,8 +6,8 @@ import {
   getAccountPortfolio
 } from "./api.js";
 
-const categoriesToml = fs.readFileSync("categories.toml", "utf8");
-const categories = TOML.parse(categoriesToml);
+import categories from "./categories.json";
+
 const lifekitCategories = Object.keys(categories.lifekit).map(cat => {
   return {
     id: cat,
@@ -18,11 +15,7 @@ const lifekitCategories = Object.keys(categories.lifekit).map(cat => {
   };
 });
 
-export function getPortfolio(authToken, accountNumber) {
-  if (!authToken) {
-    throw new Error("Auth token is needed. Please get it from robinhood.com");
-  }
-  ax.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
+export function getPortfolio(accountNumber) {
   return Promise.all([getEquityPositions(), getAccountEquity(accountNumber)])
     .then(([positions, portfolio]) => {
       let byCategories = lifekitCategories.reduce((byCats, cat) => {
