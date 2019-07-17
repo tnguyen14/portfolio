@@ -5,7 +5,8 @@
   "main": "portfolio.js",
   "type": "module",
   "scripts": {
-    "start": "node --experimental-modules -r dotenv/config bin/index.js"
+    "start": "node --experimental-modules -r dotenv/config bin/index.js",
+    "convert:categories": "node --experimental-modules bin/convertCategories.js"
   },
   "repository": {
     "type": "git",
