@@ -2,11 +2,12 @@
   "name": "@tridnguyen/portfolio",
   "version": "1.0.0",
   "description": "",
-  "main": "portfolio.js",
+  "main": "proxy.js",
   "type": "module",
   "scripts": {
     "start": "node --experimental-modules -r dotenv/config lib/index.js",
-    "convert:categories": "node --experimental-modules lib/convertCategories.js"
+    "convert:categories": "node --experimental-modules lib/convertCategories.js",
+    "deploy:proxy": "gcloud functions deploy robinhoodProxy --runtime=nodejs10 --trigger-http --project=build-tridnguyen-com"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
     "chalk": "^2.4.2",
     "cli-table": "^0.3.1",
     "dotenv": "^8.0.0",
+    "http-proxy": "^1.17.0",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {

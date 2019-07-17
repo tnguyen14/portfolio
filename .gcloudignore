@@ -1,0 +1,12 @@
+Session.vim
+.git
+.gitignore
+#!include:.gitignore
+test.sh
+categories.toml
+package-lock.json
+index.html
+
+*.js
+# only want proxy.js
+!proxy.js
