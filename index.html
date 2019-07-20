@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Robinhood Portfolio</title>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
+    <style>
+textarea[name=auth-token] {
+    width: 80%;
+    height: 10rem;
+}
+    </style>
+</head>
+
+<body>
+    <h1>Robinhood Portfolio</h1>
+    <form class="pure-form pure-form-aligned">
+        <div class="pure-control-group">
+            <label for="auth-token">Auth Token</label>
+            <textarea name="auth-token"></textarea>
+        </div>
+        <div class="pure-control-group">
+            <label for="account">Account</label>
+            <input type="text" name="account"/>
+        </div>
+    </form>
+    <div class="portfolio">
+    </div>
+    <!-- <script src="https://unpkg.com/jwt-decode@2.2.0/build/jwt-decode.min.js"></script> -->
+    <script type="module">
+        import { getPortfolio } from './portfolio.js';
+
+        window.BASE_URL = 'https://us-central1-build-tridnguyen-com.cloudfunctions.net/robinhoodProxy'
+
+        const authTokenField = document.querySelector('[name=auth-token]');
+        const authToken = localStorage.getItem('auth_token');
+        if (authToken) {
+            authTokenField.value = authToken;
+            window.AUTH_TOKEN = authToken;
+        }
+        const account = localStorage.getItem('account');
+        if (account) {
+            document.querySelector('[name=account]').value = account;
+        }
+        window.ACCOUNT = '5PY27745'
+        getPortfolio(ACCOUNT).then(console.log, err => {
+            if (err.message == 'Incorrect authentication credentials.') {
+                // if incorrect auth, delete stored auth token
+                localStorage.removeItem('auth_token');
+                authTokenField.value = '';
+            }
+        });
+    </script>
+</body>

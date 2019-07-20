@@ -3,14 +3,22 @@ function getRobinhoodApi(uri) {
     headers: {
       Authorization: `Bearer ${AUTH_TOKEN}`
     }
-  })
-    .then(response => response.json())
-    .then(null, console.error);
+  }).then(response => {
+    return response.json().then(resp => {
+      // 401 responses have this body
+      // {"detail":"Incorrect authentication credentials."}
+      if (response.status == 401) {
+        throw new Error(resp.detail);
+      } else {
+        return resp;
+      }
+    });
+  });
 }
 
 export function getPositions() {
   return getRobinhoodApi("positions/").then(resp => {
-    if (!resp) {
+    if (!resp || !resp.results) {
       throw new Error("No positions data");
     }
     if (resp.previous) {

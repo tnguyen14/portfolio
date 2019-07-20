@@ -24,6 +24,9 @@ export function getPortfolio(accountNumber) {
         byCats[cat.id].total = 0;
         return byCats;
       }, {});
+      if (!positions) {
+        return;
+      }
       return {
         positions: positions
           .filter(p => p)
@@ -49,14 +52,16 @@ export function getPortfolio(accountNumber) {
     .then(null, err => {
       if (err.response && err.response.data) {
         console.error(err.response.data);
-      } else {
-        console.error(err);
       }
+      throw err;
     });
 }
 
 function getEquityPositions() {
   return getPositions().then(positions => {
+    if (!positions) {
+      return;
+    }
     return Promise.all(
       positions.map(position => {
         const positionQty = Number.parseInt(position.quantity);
