@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node --experimental-modules -r dotenv/config lib/index.js",
+    "start:browser": "npx http-server . -p 15004",
     "convert:categories": "node --experimental-modules lib/convertCategories.js",
     "deploy:proxy": "gcloud functions deploy robinhoodProxy --runtime=nodejs10 --trigger-http --project=build-tridnguyen-com"
   },
