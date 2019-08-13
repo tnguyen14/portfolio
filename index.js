@@ -57,6 +57,7 @@ function main() {
     throw new Error('auth token is not defined');
   }
 
+  submitButton.disabled = true;
   // reset table
   while (tbody.firstChild) {
     tbody.firstChild.remove();
@@ -68,6 +69,8 @@ function main() {
       localStorage.removeItem('auth_token');
       authTokenField.value = '';
     }
+  }).then(() => {
+    submitButton.disabled = false;
   });
 }
 
