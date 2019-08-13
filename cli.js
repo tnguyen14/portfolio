@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { getPortfolio } from "../portfolio.js";
+import { getPortfolio } from "./lib/portfolio.js";
 import money from "@tridnguyen/usd-formatter";
 import chalk from "chalk";
 import Table from "cli-table";
