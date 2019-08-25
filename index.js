@@ -1,5 +1,6 @@
 import { getPortfolio } from './lib/portfolio.js';
-import money from 'https://unpkg.com/@tridnguyen/usd-formatter@1.0.1/index.js';
+import money from '//unpkg.com/@tridnguyen/usd-formatter@1.0.1/index.js';
+import {html} from '//unpkg.com/lighterhtml?module';
 
 window.BASE_URL = 'https://us-central1-build-tridnguyen-com.cloudfunctions.net/robinhoodProxy'
 
@@ -23,29 +24,14 @@ function displayPortfolio(port) {
     const cat = port.byCategories[catId];
     const actualPercentage = cat.total / port.marketValue;
     const color = actualPercentage < cat.percentage ? "yellow" : "blue";
-    const tr = document.createElement('tr');
-    const catTd = document.createElement('td');
-    const catText = document.createTextNode(cat.name);
-    catTd.appendChild(catText);
-
-    const actualPercentTd = document.createElement('td');
-    const actualPercentText = document.createTextNode((actualPercentage * 100).toFixed(2));
-    actualPercentTd.appendChild(actualPercentText);
-
-    const percentTd = document.createElement('td');
-    const percentText = document.createTextNode(cat.percentage * 100);
-    percentTd.appendChild(percentText);
-
-    const totalTd = document.createElement('td');
-    const totalText = document.createTextNode(money(cat.total));
-    totalTd.appendChild(totalText);
-
-    tr.appendChild(catTd);
-    tr.appendChild(actualPercentTd);
-    tr.appendChild(percentTd);
-    tr.appendChild(totalTd);
-
-    tbody.appendChild(tr);
+    tbody.appendChild(html`
+      <tr>
+        <td>${cat.name}</td>
+        <td>${(actualPercentage * 100).toFixed(2)}</td>
+        <td>${cat.percentage * 100}</td>
+        <td>${money(cat.total)}</td>
+      </tr>
+    `);
   });
 }
 
