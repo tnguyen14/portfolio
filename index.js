@@ -1,20 +1,21 @@
-import { getPortfolio } from './lib/portfolio.js';
-import money from '//unpkg.com/@tridnguyen/usd-formatter@1.0.1/index.js';
-import {html} from '//unpkg.com/lighterhtml?module';
+import { getPortfolio } from "./lib/portfolio.js";
+import money from "//unpkg.com/@tridnguyen/usd-formatter@1.0.1/index.js";
+import { html } from "//unpkg.com/lighterhtml?module";
 
-window.BASE_URL = 'https://us-central1-build-tridnguyen-com.cloudfunctions.net/robinhoodProxy'
+window.BASE_URL =
+  "https://us-central1-build-tridnguyen-com.cloudfunctions.net/robinhoodProxy";
 
-const authTokenField = document.querySelector('[name=auth-token]');
-const accountField = document.querySelector('[name=account]');
-const submitButton = document.querySelector('[type=submit]');
-const tbody = document.querySelector('.portfolio tbody');
+const authTokenField = document.querySelector("[name=auth-token]");
+const accountField = document.querySelector("[name=account]");
+const submitButton = document.querySelector("[type=submit]");
+const tbody = document.querySelector(".portfolio tbody");
 
-let authToken = localStorage.getItem('auth_token');
+let authToken = localStorage.getItem("auth_token");
 if (authToken) {
   authTokenField.value = authToken;
   window.AUTH_TOKEN = authToken;
 }
-let account = localStorage.getItem('account');
+let account = localStorage.getItem("account");
 if (account) {
   accountField.value = account;
 }
@@ -25,9 +26,12 @@ function displayPortfolio(port) {
     const actualPercentage = cat.total / port.marketValue;
     tbody.appendChild(html`
       <tr>
-        <td data-tooltip="${cat.symbols.join(', ')}">${cat.name}</td>
-        <td data-threshold="${ actualPercentage < cat.percentage ?
-          'not-satisfied' : 'satisfied'}">
+        <td data-tooltip="${cat.symbols.join(", ")}">${cat.name}</td>
+        <td
+          data-threshold="${actualPercentage < cat.percentage
+            ? "not-satisfied"
+            : "satisfied"}"
+        >
           ${(actualPercentage * 100).toFixed(2)}
         </td>
         <td>${cat.percentage * 100}</td>
@@ -39,10 +43,10 @@ function displayPortfolio(port) {
 
 function main() {
   if (!account) {
-    throw new Error('account is not defined');
+    throw new Error("account is not defined");
   }
   if (!window.AUTH_TOKEN) {
-    throw new Error('auth token is not defined');
+    throw new Error("auth token is not defined");
   }
 
   submitButton.disabled = true;
@@ -51,26 +55,30 @@ function main() {
     tbody.firstChild.remove();
   }
 
-  getPortfolio(account).then(displayPortfolio, err => {
-    if (err.message == 'Incorrect authentication credentials.') {
-      // if incorrect auth, delete stored auth token
-      localStorage.removeItem('auth_token');
-      authTokenField.value = '';
-    }
-  }).then(() => {
-    submitButton.disabled = false;
-  });
+  getPortfolio(account)
+    .then(displayPortfolio, err => {
+      if (err.message == "Incorrect authentication credentials.") {
+        // if incorrect auth, delete stored auth token
+        localStorage.removeItem("auth_token");
+        authTokenField.value = "";
+      } else {
+        console.error(err);
+      }
+    })
+    .then(() => {
+      submitButton.disabled = false;
+    });
 }
 
-submitButton.addEventListener('click', (e) => {
+submitButton.addEventListener("click", e => {
   e.preventDefault();
   if (accountField.value && accountField.value != account) {
     account = accountField.value;
-    localStorage.setItem('account', account);
+    localStorage.setItem("account", account);
   }
   if (authTokenField.value && authTokenField.value != window.AUTH_TOKEN) {
     window.AUTH_TOKEN = authTokenField.value;
-    localStorage.setItem('auth_token', window.AUTH_TOKEN);
+    localStorage.setItem("auth_token", window.AUTH_TOKEN);
   }
   main();
 });

@@ -18,7 +18,7 @@ exports.robinhoodProxy = (req, res) => {
   proxy.web(req, res, { target: "https://api.robinhood.com" });
 
   // inspired from https://github.com/http-party/node-http-proxy/issues/872#issuecomment-277056284
-  const allowedOrigins = ["localhost", "home.tridnguyen.com", "tridnguyen.com"];
+  const allowedOrigins = ["localhost", "lab.tridnguyen.com", "tridnguyen.com"];
 
   proxy.on("proxyRes", (proxyRes, req, res) => {
     let allowedOrigin = false;
