@@ -72,7 +72,7 @@ async function main() {
     const portfolio = await getPortfolio(account);
     displayPortfolio(portfolio);
     tbody.firstChild.remove();
-  } catch (e) {
+  } catch (err) {
     if (err.message == "Incorrect authentication credentials.") {
       // if incorrect auth, delete stored auth token
       localStorage.removeItem("auth_token");
