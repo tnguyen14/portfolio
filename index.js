@@ -24,13 +24,13 @@ function displayPortfolio(port) {
   Object.keys(port.byCategories).forEach(catId => {
     const cat = port.byCategories[catId];
     const actualPercentage = cat.total / port.marketValue;
-    tbody.appendChild(html`
+    tbody.appendChild(html.node`
       <tr>
         <td data-tooltip="${cat.symbols.join(", ")}">${cat.name}</td>
         <td
-          data-threshold="${actualPercentage < cat.percentage
-            ? "not-satisfied"
-            : "satisfied"}"
+          data-threshold="${
+            actualPercentage < cat.percentage ? "not-satisfied" : "satisfied"
+          }"
         >
           ${(actualPercentage * 100).toFixed(2)}
         </td>
