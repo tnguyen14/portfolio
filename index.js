@@ -1,6 +1,6 @@
 import { getPortfolio } from "./lib/portfolio.js";
-import money from "//unpkg.com/@tridnguyen/usd-formatter@1.0.1/index.js";
-import { html } from "//unpkg.com/lighterhtml?module";
+import money from "https://cdn.skypack.dev/@tridnguyen/money@1.5.8";
+import { html } from "https://cdn.skypack.dev/lighterhtml@^2.0.9";
 
 window.BASE_URL =
   "https://us-central1-build-tridnguyen-com.cloudfunctions.net/robinhoodProxy";
@@ -35,7 +35,7 @@ function displayPortfolio(port) {
           ${(actualPercentage * 100).toFixed(2)}
         </td>
         <td>${cat.percentage * 100}</td>
-        <td>${money(cat.total)}</td>
+        <td>${money.usd(cat.total * 100)}</td>
       </tr>
     `);
   });
