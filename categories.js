@@ -23,7 +23,7 @@ export default {
     tbonds: {
       name: "U.S. Treasury bonds",
       percentage: 0.15,
-      symbols: ["BND"]
+      symbols: ["BND", "VTEB"]
     },
     tips: {
       name: "U.S. Treasury Inflation Protected Securities",

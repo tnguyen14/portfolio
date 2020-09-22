@@ -43,7 +43,9 @@ symbols = [
 name = "U.S. Treasury bonds"
 percentage = 0.15
 symbols = [
-  "BND"
+  "BND",
+  "VTEB",
+  "VCIT"
 ]
 
 [lifekit.tips]
