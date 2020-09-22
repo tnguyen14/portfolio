@@ -2,8 +2,7 @@ import { getPortfolio } from "./lib/portfolio.js";
 import money from "https://cdn.skypack.dev/@tridnguyen/money@1.5.8";
 import { html } from "https://cdn.skypack.dev/lighterhtml@^2.0.9";
 
-window.BASE_URL =
-  "https://us-central1-build-tridnguyen-com.cloudfunctions.net/robinhoodProxy";
+window.BASE_URL = "https://thirdparty.cloud.tridnguyen.com/robinhood";
 
 const authTokenField = document.querySelector("[name=auth-token]");
 const accountField = document.querySelector("[name=account]");
@@ -41,7 +40,7 @@ function displayPortfolio(port) {
   });
 }
 
-function main() {
+async function main() {
   if (!account) {
     throw new Error("account is not defined");
   }
@@ -54,20 +53,24 @@ function main() {
   while (tbody.firstChild) {
     tbody.firstChild.remove();
   }
+  tbody.appendChild(html.node`
+    <tr><td colspan="4">Loading...</td></tr>
+  `);
 
-  getPortfolio(account)
-    .then(displayPortfolio, err => {
-      if (err.message == "Incorrect authentication credentials.") {
-        // if incorrect auth, delete stored auth token
-        localStorage.removeItem("auth_token");
-        authTokenField.value = "";
-      } else {
-        console.error(err);
-      }
-    })
-    .then(() => {
-      submitButton.disabled = false;
-    });
+  try {
+    const portfolio = await getPortfolio(account);
+    displayPortfolio(portfolio);
+    tbody.firstChild.remove();
+  } catch (e) {
+    if (err.message == "Incorrect authentication credentials.") {
+      // if incorrect auth, delete stored auth token
+      localStorage.removeItem("auth_token");
+      authTokenField.value = "";
+    } else {
+      console.error(err);
+    }
+  }
+  submitButton.disabled = false;
 }
 
 submitButton.addEventListener("click", e => {
