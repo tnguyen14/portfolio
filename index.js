@@ -1,23 +1,17 @@
 import { getPortfolio } from "./lib/portfolio.js";
 import money from "https://cdn.skypack.dev/@tridnguyen/money@1.5.8";
 import { html } from "https://cdn.skypack.dev/lighterhtml@^2.0.9";
+import {
+  getSession,
+  deleteSession,
+  createAuth
+} from "https://cdn.skypack.dev/@tridnguyen/auth@5.4.0";
 
+const auth = createAuth();
 window.BASE_URL = "https://thirdparty.cloud.tridnguyen.com/robinhood";
 
-const authTokenField = document.querySelector("[name=auth-token]");
-const accountField = document.querySelector("[name=account]");
 const submitButton = document.querySelector("[type=submit]");
 const tbody = document.querySelector(".portfolio tbody");
-
-let authToken = localStorage.getItem("auth_token");
-if (authToken) {
-  authTokenField.value = authToken;
-  window.AUTH_TOKEN = authToken;
-}
-let account = localStorage.getItem("account");
-if (account) {
-  accountField.value = account;
-}
 
 function displayPortfolio(port) {
   Object.keys(port.byCategories).forEach(catId => {
@@ -51,12 +45,32 @@ function displayPortfolio(port) {
   });
 }
 
-async function main() {
-  if (!account) {
-    throw new Error("account is not defined");
+document.querySelector(".auth .login").addEventListener("click", e => {
+  auth.silentAuth();
+});
+
+document.querySelector(".auth .logout").addEventListener("click", e => {
+  deleteSession();
+  // TODO refresh
+});
+
+auth.handleCallback(err => {
+  if (err) {
+    console.error(err);
+    return;
+  } else {
+    main();
   }
-  if (!window.AUTH_TOKEN) {
-    throw new Error("auth token is not defined");
+});
+
+async function main() {
+  const session = getSession();
+  const authEl = document.querySelector(".auth");
+
+  if (!session) {
+    authEl.classList.remove("logged-in");
+  } else {
+    authEl.classList.add("logged-in");
   }
 
   submitButton.disabled = true;
@@ -73,27 +87,13 @@ async function main() {
     displayPortfolio(portfolio);
     tbody.firstChild.remove();
   } catch (err) {
-    if (err.message == "Incorrect authentication credentials.") {
-      // if incorrect auth, delete stored auth token
-      localStorage.removeItem("auth_token");
-      authTokenField.value = "";
-    } else {
-      console.error(err);
-    }
+    console.error(err);
   }
   submitButton.disabled = false;
 }
 
 submitButton.addEventListener("click", e => {
   e.preventDefault();
-  if (accountField.value && accountField.value != account) {
-    account = accountField.value;
-    localStorage.setItem("account", account);
-  }
-  if (authTokenField.value && authTokenField.value != window.AUTH_TOKEN) {
-    window.AUTH_TOKEN = authTokenField.value;
-    localStorage.setItem("auth_token", window.AUTH_TOKEN);
-  }
   main();
 });
 

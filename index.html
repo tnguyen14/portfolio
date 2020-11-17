@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Robinhood Portfolio</title>
-    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="lib/tooltip.css">
     <style>
 body {
@@ -13,6 +13,15 @@ body {
 textarea[name=auth-token] {
     width: 80%;
     height: 10rem;
+}
+.auth .logout {
+    display: none;
+}
+.auth.logged-in .logout {
+    display: inline-block;
+}
+.auth.logged-in .login {
+    display: none;
 }
 [data-threshold=satisfied] {
     color: dodgerblue;
@@ -24,16 +33,12 @@ textarea[name=auth-token] {
 </head>
 
 <body>
-    <h1>Robinhood Portfolio</h1>
+    <h1>Portfolio</h1>
+    <div class="auth">
+        <button type="button" class="pure-button login">Login</button>
+        <button type="button" class="pure-button logout">Logout</button>
+    </div>
     <form class="pure-form pure-form-aligned">
-        <div class="pure-control-group">
-            <label for="auth-token">Auth Token</label>
-            <textarea name="auth-token"></textarea>
-        </div>
-        <div class="pure-control-group">
-            <label for="account">Account</label>
-            <input type="text" name="account"/>
-        </div>
         <div class="pure-controls">
             <button type="submit" class="pure-button pure-button-primary">
                 Analyze Portfolio
