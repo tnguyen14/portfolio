@@ -29,6 +29,9 @@ textarea[name=auth-token] {
 [data-threshold="not-satisfied"] {
     color: orange;
 }
+.actions {
+    margin-top: 1em;
+}
     </style>
 </head>
 
@@ -38,13 +41,6 @@ textarea[name=auth-token] {
         <button type="button" class="pure-button login">Login</button>
         <button type="button" class="pure-button logout">Logout</button>
     </div>
-    <form class="pure-form pure-form-aligned">
-        <div class="pure-controls">
-            <button type="submit" class="pure-button pure-button-primary">
-                Analyze Portfolio
-            </button>
-        </div>
-    </form>
     <h2>Breakdown by categories</h2>
     <p>The categories are as recommended by <a href="https://www.npr.org/2018/12/12/676158680/your-cheat-sheet-for-smarter-investing">NPR's LifeKit Cheat Sheet for Smarter Investing</a>.</p>
     <table class="portfolio pure-table">
@@ -57,6 +53,9 @@ textarea[name=auth-token] {
         <tbody>
         </tbody>
     </table>
+    <div class="actions">
+        <button class="pure-button pure-button-primary">Analyze Portfolio</button>
+    </div>
     <!-- <script src="https://unpkg.com/jwt-decode@2.2.0/build/jwt-decode.min.js"></script> -->
     <script type="module" src="index.js"></script>
 </body>

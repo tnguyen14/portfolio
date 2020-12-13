@@ -10,14 +10,13 @@ import {
 const auth = createAuth();
 window.BASE_URL = "https://lists.cloud.tridnguyen.com";
 
-const submitButton = document.querySelector("[type=submit]");
+const analyzeButton = document.querySelector(".actions button");
 const tbody = document.querySelector(".portfolio tbody");
 
 function displayPortfolio(port) {
   Object.keys(port.byCategories).forEach(catId => {
     const cat = port.byCategories[catId];
     const actualPercentage = cat.total / port.marketValue;
-    console.log(cat);
     tbody.appendChild(html.node`
       <tr>
         <td data-tooltip="${cat.symbols.join(", ")}">
@@ -74,7 +73,7 @@ async function main() {
     window.AUTH_TOKEN = session.idToken;
   }
 
-  submitButton.disabled = true;
+  analyzeButton.disabled = true;
   // reset table
   while (tbody.firstChild) {
     tbody.firstChild.remove();
@@ -90,10 +89,10 @@ async function main() {
   } catch (err) {
     console.error(err);
   }
-  submitButton.disabled = false;
+  analyzeButton.disabled = false;
 }
 
-submitButton.addEventListener("click", e => {
+analyzeButton.addEventListener("click", e => {
   e.preventDefault();
   main();
 });
