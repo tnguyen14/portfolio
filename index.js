@@ -1,14 +1,14 @@
 import { getPortfolio } from "./lib/portfolio.js";
-import money from "https://cdn.skypack.dev/@tridnguyen/money@1.5.8";
+import money from "https://cdn.skypack.dev/@tridnguyen/money@1.5.11";
 import { html } from "https://cdn.skypack.dev/lighterhtml@^2.0.9";
 import {
   getSession,
   deleteSession,
   createAuth
-} from "https://cdn.skypack.dev/@tridnguyen/auth@5.4.0";
+} from "https://cdn.skypack.dev/@tridnguyen/auth@5.4.2";
 
 const auth = createAuth();
-window.BASE_URL = "https://thirdparty.cloud.tridnguyen.com/robinhood";
+window.BASE_URL = "https://lists.cloud.tridnguyen.com";
 
 const submitButton = document.querySelector("[type=submit]");
 const tbody = document.querySelector(".portfolio tbody");
@@ -71,6 +71,7 @@ async function main() {
     authEl.classList.remove("logged-in");
   } else {
     authEl.classList.add("logged-in");
+    window.AUTH_TOKEN = session.idToken;
   }
 
   submitButton.disabled = true;
@@ -83,7 +84,7 @@ async function main() {
   `);
 
   try {
-    const portfolio = await getPortfolio(account);
+    const portfolio = await getPortfolio();
     displayPortfolio(portfolio);
     tbody.firstChild.remove();
   } catch (err) {
@@ -97,4 +98,4 @@ submitButton.addEventListener("click", e => {
   main();
 });
 
-main();
+// main();
