@@ -8,7 +8,6 @@ import {
 } from "https://cdn.skypack.dev/@tridnguyen/auth@5.4.2";
 
 const auth = createAuth();
-window.BASE_URL = "https://lists.cloud.tridnguyen.com";
 
 const analyzeButton = document.querySelector(".actions button");
 const tbody = document.querySelector(".portfolio tbody");
@@ -96,5 +95,3 @@ analyzeButton.addEventListener("click", e => {
   e.preventDefault();
   main();
 });
-
-// main();
